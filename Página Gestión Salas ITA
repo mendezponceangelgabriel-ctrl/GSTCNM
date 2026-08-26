@@ -1,0 +1,1341 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --r:#C1272D;--rd:#8B1A1F;--rl:#F5E6E7;
+  --g:#F2A900;--gl:#FEF6E4;
+  --n:#1A2A4A;--nl:#E8EDF4;
+  --gr:#2D7A4F;--grl:#E6F4ED;
+  --gy:#5A5F6A;--gyl:#F4F5F6;
+  --bd:rgba(26,42,74,0.12);
+}
+#app{font-family:system-ui,sans-serif;background:var(--gyl);min-height:600px;position:relative;}
+.header{background:var(--n);border-bottom:4px solid var(--r);}
+.hrow{display:flex;align-items:center;gap:12px;padding:12px 18px;}
+.seal{height:38px;width:auto;flex-shrink:0;display:flex;align-items:center;}
+.seal img{height:100%;width:auto;display:block;}
+.htitle h1{font-size:14px;font-weight:600;color:white;text-transform:uppercase;letter-spacing:.5px;}
+.htitle p{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px;}
+.hright{margin-left:auto;font-size:13px;font-weight:600;color:var(--g);font-variant-numeric:tabular-nums;}
+nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
+.nb{background:none;border:none;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;padding:8px 14px;cursor:pointer;border-bottom:3px solid transparent;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.nb:hover{color:white;}
+.nb.on{color:var(--g);border-bottom-color:var(--g);}
+.main{padding:16px 18px;}
+.sttl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--gy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.sttl::after{content:'';flex:1;height:.5px;background:var(--bd);}
+.tbar{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:8px;padding:9px 14px;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.tinfo{font-size:13px;color:var(--n);font-weight:500;}
+.tclk{margin-left:auto;font-size:14px;font-weight:600;color:var(--rd);font-variant-numeric:tabular-nums;}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.sc{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:8px;padding:12px 14px;}
+.sc.rl{border-left:3px solid var(--r);border-radius:0 8px 8px 0;}
+.sc.gl{border-left:3px solid var(--gr);border-radius:0 8px 8px 0;}
+.sc.nl{border-left:3px solid var(--n);border-radius:0 8px 8px 0;}
+.sc .lb{font-size:11px;color:var(--gy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.sc .vl{font-size:22px;font-weight:600;color:var(--n);line-height:1;}
+.sc .sb{font-size:11px;color:var(--gy);margin-top:3px;}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.rc{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;overflow:hidden;}
+.rh{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.rh.occ{background:#FEF0F0;border-bottom:2px solid var(--r);}
+.rh.avl{background:var(--grl);border-bottom:2px solid var(--gr);}
+.rh.mnt{background:var(--gl);border-bottom:2px solid var(--g);}
+.rn{font-size:16px;font-weight:600;color:var(--n);}
+.sp{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
+.sp.occ{background:var(--r);color:white;}
+.sp.avl{background:var(--gr);color:white;}
+.sp.mnt{background:var(--g);color:var(--n);}
+.rb{padding:12px 16px;}
+.rir{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:.5px solid var(--bd);}
+.rir:last-child{border-bottom:none;}
+.rir .ll{color:var(--gy);}
+.rir .vv{font-weight:500;color:var(--n);}
+.ra{padding:9px 16px;display:flex;gap:7px;background:var(--gyl);}
+.btn{flex:1;padding:7px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.5px;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+.btn:hover{opacity:.82;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.bp{background:var(--n);color:white;}
+.bg{background:var(--gr);color:white;}
+.bgold{background:var(--g);color:var(--n);}
+.br{background:var(--r);color:white;}
+.tab-c{display:none;}
+.tab-c.on{display:block;}
+.modal-ov{display:none;position:absolute;inset:0;background:rgba(10,20,45,.5);z-index:100;align-items:flex-start;justify-content:center;padding-top:30px;min-height:600px;overflow-y:auto;}
+.modal-ov.open{display:flex;}
+.modal{background:white;border-radius:12px;width:380px;max-width:96%;}
+.mh{background:var(--n);color:white;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--r);border-radius:12px 12px 0 0;}
+.mh h3{font-size:13px;font-weight:600;}
+.mc{background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.mc:hover{color:white;}
+.mb{padding:16px;}
+.fg{margin-bottom:11px;}
+.fl{display:block;font-size:11px;font-weight:600;color:var(--gy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.fi{width:100%;padding:8px 11px;border:1px solid var(--bd);border-radius:6px;font-size:13px;color:var(--n);background:var(--gyl);}
+.fi:focus{outline:none;border-color:var(--n);background:white;}
+.fi:disabled{color:var(--gy);cursor:not-allowed;}
+.fhint{font-size:11px;color:var(--gy);margin-top:4px;display:flex;align-items:center;gap:5px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mf{padding:11px 16px;background:var(--gyl);display:flex;gap:8px;justify-content:flex-end;border-radius:0 0 12px 12px;flex-wrap:wrap;}
+.bmd{padding:7px 14px;font-size:12px;border-radius:6px;font-weight:600;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:.5px;}
+.bmd:hover{opacity:.85;}
+.bmd.pri{background:var(--r);color:white;}
+.bmd.sec{background:white;color:var(--n);border:1px solid var(--bd)!important;}
+.bmd.grn{background:var(--gr);color:white;}
+.toast{position:absolute;bottom:14px;right:14px;background:var(--n);color:white;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:500;border-left:4px solid var(--gr);display:none;z-index:200;max-width:260px;}
+.toast.show{display:block;}
+.toast.err{border-left-color:var(--r);}
+
+/* GANTT */
+.gantt-wrap{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;overflow:hidden;}
+.gantt-header{background:var(--n);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.gantt-title{font-size:13px;font-weight:600;color:white;text-transform:uppercase;letter-spacing:.5px;}
+.gantt-date{font-size:12px;color:rgba(255,255,255,.6);}
+.gantt-body{padding:0;}
+.gantt-ruler{display:flex;border-bottom:1px solid var(--bd);padding-left:72px;}
+.gantt-ruler-cell{flex:1;text-align:center;font-size:10px;color:var(--gy);padding:5px 0;border-left:.5px solid var(--bd);font-weight:500;}
+.gantt-ruler-cell:first-child{border-left:none;}
+.gantt-row{display:flex;align-items:stretch;border-bottom:.5px solid var(--bd);min-height:52px;}
+.gantt-row:last-child{border-bottom:none;}
+.gantt-label{width:72px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;letter-spacing:.5px;}
+.gantt-label.a{background:var(--n);}
+.gantt-label.b{background:var(--r);}
+.gantt-track{flex:1;position:relative;display:flex;align-items:center;}
+.gantt-grid-line{position:absolute;top:0;bottom:0;width:.5px;background:var(--bd);}
+.gantt-block{position:absolute;top:8px;bottom:8px;border-radius:5px;cursor:pointer;display:flex;align-items:center;padding:0 8px;overflow:hidden;transition:opacity .15s;}
+.gantt-block:hover{opacity:.85;}
+.gantt-block.occ{background:var(--r);}
+.gantt-block.occ.sala-a{background:var(--n);}
+.gantt-block.mine{outline:2px solid var(--g);outline-offset:-2px;}
+.gantt-block-text{color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gantt-block-name{font-size:11px;font-weight:600;display:block;}
+.gantt-block-sub{font-size:10px;opacity:.8;display:block;}
+.gantt-now-line{position:absolute;top:0;bottom:0;width:2px;background:var(--g);z-index:5;}
+.gantt-now-dot{position:absolute;top:-4px;left:-4px;width:10px;height:10px;border-radius:50%;background:var(--g);}
+.gantt-free-slot{position:absolute;top:8px;bottom:8px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;border:1.5px dashed rgba(45,122,79,.35);background:var(--grl);transition:all .15s;}
+.gantt-free-slot:hover{border-color:var(--gr);background:#D4EDE0;}
+.gantt-free-slot.locked{cursor:not-allowed;opacity:.5;border-style:solid;}
+.gantt-free-slot i{font-size:14px;color:rgba(45,122,79,.6);}
+.gantt-legend{display:flex;gap:16px;padding:10px 16px;border-top:.5px solid var(--bd);background:var(--gyl);flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--gy);}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+.now-badge{display:flex;align-items:center;gap:5px;margin-left:auto;font-size:11px;color:#92620A;font-weight:500;}
+
+/* HISTORIAL */
+.nav-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.wbtn{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:6px;width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--n);flex-shrink:0;}
+.wbtn:hover{background:var(--nl);}
+.wbtn:disabled{opacity:.35;cursor:not-allowed;}
+.wlbl{font-size:13px;font-weight:600;color:var(--n);flex:1;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px;}
+.cal-hdr{text-align:center;font-size:11px;font-weight:600;color:var(--gy);text-transform:uppercase;padding:4px 0;}
+.cal-day{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:6px;padding:5px 3px;text-align:center;cursor:pointer;min-height:44px;transition:all .12s;}
+.cal-day:hover{border-color:var(--n);}
+.cal-day.today{border:2px solid var(--r);}
+.cal-day.sel{background:var(--nl);border-color:var(--n);}
+.cal-day.empty{background:none;border-color:transparent;cursor:default;}
+.cal-day .dn{font-size:12px;font-weight:600;color:var(--n);}
+.cal-day.today .dn{color:var(--r);}
+.cal-day .dc{margin-top:3px;display:flex;flex-wrap:wrap;gap:2px;justify-content:center;}
+.cdot{width:5px;height:5px;border-radius:50%;}
+.hist-item{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:8px;padding:9px 13px;margin-bottom:6px;display:flex;align-items:center;gap:11px;}
+.hico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.hico.res{background:var(--nl);color:var(--n);}
+.hico.can{background:var(--rl);color:var(--r);}
+.hico.rel{background:var(--grl);color:var(--gr);}
+.hbody strong{font-size:12px;color:var(--n);display:block;}
+.hbody span{font-size:11px;color:var(--gy);}
+
+/* ===== AUTH / LOGIN ===== */
+#loadingScreen{min-height:600px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--gy);font-size:13px;}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--nl);border-top-color:var(--n);animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#authScreen{min-height:600px;display:flex;align-items:center;justify-content:center;padding:24px 18px;}
+.auth-box{width:100%;max-width:360px;}
+.auth-seal{height:64px;width:auto;display:block;margin:0 auto 12px;}
+.auth-hd{text-align:center;margin-bottom:20px;}
+.auth-hd h1{font-size:15px;font-weight:700;color:var(--n);text-transform:uppercase;letter-spacing:.5px;}
+.auth-hd p{font-size:12px;color:var(--gy);margin-top:3px;}
+.auth-card{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:12px;padding:20px 18px;box-shadow:0 6px 18px rgba(26,42,74,.06);}
+.auth-tabs{display:flex;background:var(--gyl);border-radius:8px;padding:3px;margin-bottom:16px;}
+.auth-tab{flex:1;border:none;background:none;padding:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gy);border-radius:6px;cursor:pointer;}
+.auth-tab.on{background:var(--n);color:white;}
+.auth-err{background:var(--rl);border:.5px solid rgba(193,39,45,.3);color:var(--rd);font-size:12px;padding:8px 11px;border-radius:6px;margin-bottom:11px;display:none;}
+.auth-err.show{display:block;}
+.auth-submit{width:100%;padding:10px;border-radius:6px;background:var(--r);color:white;border:none;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;margin-top:4px;}
+.auth-submit:hover{opacity:.88;}
+.auth-note{font-size:11px;color:var(--gy);text-align:center;margin-top:14px;line-height:1.5;}
+.demo-box{background:var(--gl);border:.5px solid rgba(242,169,0,.3);border-radius:8px;padding:9px 12px;font-size:11px;color:#7A5200;margin-top:14px;line-height:1.5;}
+
+/* ===== ROLE / SESSION UI ===== */
+.uinfo{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.uinfo .uname{font-size:12px;color:white;font-weight:600;text-align:right;line-height:1.3;}
+.uinfo .uname small{display:block;font-weight:500;color:rgba(255,255,255,.5);font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+.rolebadge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;display:inline-block;}
+.rolebadge.adm{background:var(--g);color:var(--n);}
+.rolebadge.doc{background:rgba(255,255,255,.15);color:white;}
+.logoutb{background:rgba(255,255,255,.1);border:none;color:white;width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.logoutb:hover{background:rgba(255,255,255,.2);}
+
+/* ===== MISC NEW ===== */
+.myres-item{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:8px;padding:10px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;}
+.myres-badge{width:38px;height:38px;border-radius:8px;background:var(--nl);color:var(--n);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;text-align:center;line-height:1.1;}
+.myres-body{flex:1;min-width:0;}
+.myres-body strong{font-size:12px;color:var(--n);display:block;}
+.myres-body span{font-size:11px;color:var(--gy);}
+.myres-acts{display:flex;gap:6px;flex-shrink:0;}
+.iconbtn{width:28px;height:28px;border-radius:6px;border:.5px solid var(--bd);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--n);}
+.iconbtn:hover{background:var(--nl);}
+.iconbtn.danger{color:var(--r);}
+.empty-note{font-size:13px;color:var(--gy);text-align:center;padding:18px 0;}
+.usr-row{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:8px;padding:10px 13px;margin-bottom:6px;display:flex;align-items:center;gap:11px;}
+.usr-av{width:32px;height:32px;border-radius:50%;background:var(--nl);color:var(--n);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.usr-body{flex:1;min-width:0;}
+.usr-body strong{font-size:12px;color:var(--n);display:block;}
+.usr-body span{font-size:11px;color:var(--gy);}
+.info-banner{background:var(--nl);border:.5px solid var(--bd);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--n);margin-bottom:14px;display:flex;gap:9px;align-items:flex-start;}
+
+/* ===== ESTADÍSTICAS ===== */
+.barchart{display:flex;align-items:flex-end;gap:8px;height:140px;padding:16px 14px 6px;}
+.barchart-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;}
+.barchart-bar{width:100%;max-width:34px;background:var(--n);border-radius:5px 5px 0 0;min-height:3px;transition:height .25s;position:relative;}
+.barchart-bar .bv{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;color:var(--n);}
+.barchart-lbl{font-size:10px;color:var(--gy);text-transform:uppercase;letter-spacing:.3px;}
+.barchart-wrap{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;margin-bottom:16px;}
+.barchart-hd{padding:11px 16px 0;font-size:12px;font-weight:600;color:var(--n);}
+
+/* ===== FORO ===== */
+.forum-composer{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:16px;}
+.forum-ta{width:100%;min-height:70px;padding:9px 11px;border:1px solid var(--bd);border-radius:6px;font-size:13px;color:var(--n);background:var(--gyl);font-family:inherit;resize:vertical;margin-bottom:9px;}
+.forum-ta:focus{outline:none;border-color:var(--n);background:white;}
+.forum-row{display:flex;gap:8px;align-items:center;}
+.forum-cat{padding:7px 9px;border:1px solid var(--bd);border-radius:6px;font-size:12px;color:var(--n);background:white;}
+.forum-post{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;padding:13px 15px;margin-bottom:11px;}
+.forum-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.forum-av{width:30px;height:30px;border-radius:50%;background:var(--nl);color:var(--n);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.forum-who{flex:1;min-width:0;}
+.forum-who strong{font-size:12px;color:var(--n);display:block;}
+.forum-who span{font-size:10.5px;color:var(--gy);}
+.pill{font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0;}
+.pill.sug{background:var(--gl);color:#7A5200;}
+.pill.com{background:var(--nl);color:var(--n);}
+.pill.inc{background:var(--rl);color:var(--rd);}
+.forum-text{font-size:13px;color:var(--n);line-height:1.5;margin-bottom:8px;white-space:pre-wrap;}
+.forum-acts{display:flex;gap:12px;margin-bottom:2px;}
+.forum-link{background:none;border:none;font-size:11px;font-weight:600;color:var(--gy);cursor:pointer;display:flex;align-items:center;gap:4px;padding:2px 0;}
+.forum-link:hover{color:var(--n);}
+.forum-link.danger:hover{color:var(--r);}
+.forum-replies{margin-top:10px;padding-left:14px;border-left:2px solid var(--bd);}
+.forum-reply{padding:8px 0;border-bottom:.5px solid var(--bd);}
+.forum-reply:last-child{border-bottom:none;}
+.forum-reply-hd{display:flex;align-items:center;gap:7px;margin-bottom:3px;}
+.forum-reply-hd strong{font-size:11.5px;color:var(--n);}
+.forum-reply-hd span{font-size:10px;color:var(--gy);}
+.forum-reply p{font-size:12.5px;color:var(--n);line-height:1.4;}
+.forum-reply-box{display:none;gap:7px;margin-top:9px;}
+.forum-reply-box.open{display:flex;}
+.forum-reply-input{flex:1;padding:7px 10px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:var(--gyl);}
+.forum-reply-input:focus{outline:none;border-color:var(--n);background:white;}
+</style>
+
+<div id="app">
+
+<!-- LOADING -->
+<div id="loadingScreen"><div class="spin"></div><span>Cargando sistema…</span></div>
+
+<!-- AUTH -->
+<div id="authScreen" style="display:none;">
+  <div class="auth-box">
+    <div class="auth-hd">
+      <img class="auth-seal" src="data:image/png;base64,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" alt="Logo IT Chiná">
+      <h1>Centro de Cómputo</h1>
+      <p>Instituto Tecnológico — Gestión de Salas</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="atLogin" onclick="setAuthMode('login')">Iniciar sesión</button>
+        <button class="auth-tab" id="atReg" onclick="setAuthMode('register')">Crear cuenta docente</button>
+      </div>
+      <div class="auth-err" id="authErr"></div>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <div class="fg"><label class="fl">Correo</label><input class="fi" id="liEmail" placeholder="tu.correo@instituto.edu" autocomplete="username"></div>
+        <div class="fg" style="margin-bottom:4px;"><label class="fl">Contraseña</label><input class="fi" id="liPass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="auth-submit" onclick="doLogin()"><i class="ti ti-login" aria-hidden="true"></i> Entrar</button>
+        <p class="auth-note">¿Eres docente y aún no tienes cuenta? Usa la pestaña «Crear cuenta docente».</p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="registerForm" style="display:none;">
+        <div class="fg"><label class="fl">Nombre completo</label><input class="fi" id="rgName" placeholder="Ej. Ing. María López"></div>
+        <div class="fg"><label class="fl">Correo institucional</label><input class="fi" id="rgEmail" placeholder="maria.lopez@instituto.edu"></div>
+        <div class="fr">
+          <div class="fg" style="margin:0;"><label class="fl">Contraseña</label><input class="fi" id="rgPass" type="password" placeholder="Mín. 4 caracteres"></div>
+          <div class="fg" style="margin:0;"><label class="fl">Confirmar</label><input class="fi" id="rgPass2" type="password" placeholder="Repite"></div>
+        </div>
+        <button class="auth-submit" onclick="doRegister()"><i class="ti ti-user-plus" aria-hidden="true"></i> Crear cuenta de docente</button>
+        <p class="auth-note">Tu cuenta se crea con rol <strong>Docente</strong>, con permiso para solicitar salas con hasta 7 días de anticipación.</p>
+      </div>
+
+      <div class="demo-box"><i class="ti ti-info-circle" aria-hidden="true"></i> Los datos de acceso se guardan en el almacenamiento compartido de este artefacto (no es un backend real ni un sistema con cifrado de nivel producción).</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP ROOT (post-login) -->
+<div id="appRoot" style="display:none;">
+<header class="header">
+  <div class="hrow">
+    <div class="seal"><img src="data:image/png;base64,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" alt="Logo IT Chiná"></div>
+    <div class="htitle">
+      <h1>Centro de Cómputo</h1>
+      <p>Instituto Tecnológico — Gestión de Salas</p>
+    </div>
+    <div class="uinfo">
+      <div class="uname" id="uNameLbl">—<small id="uRoleLbl">—</small></div>
+      <button class="logoutb" onclick="doLogout()" title="Cerrar sesión" aria-label="Cerrar sesión"><i class="ti ti-logout" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <nav>
+    <button class="nb on" onclick="sw('dashboard')" id="tab-dashboard"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Panel</button>
+    <button class="nb" onclick="sw('agenda')" id="tab-agenda"><i class="ti ti-chart-gantt" aria-hidden="true"></i> Agenda</button>
+    <button class="nb" onclick="sw('historial')" id="tab-historial"><i class="ti ti-history" aria-hidden="true"></i> Historial</button>
+    <button class="nb" onclick="sw('foro')" id="tab-foro"><i class="ti ti-message-circle" aria-hidden="true"></i> Foro</button>
+    <button class="nb" onclick="sw('usuarios')" id="tab-usuarios" style="display:none;"><i class="ti ti-users" aria-hidden="true"></i> Usuarios</button>
+    <button class="nb" onclick="sw('stats')" id="tab-stats" style="display:none;"><i class="ti ti-chart-bar" aria-hidden="true"></i> Estadísticas</button>
+  </nav>
+</header>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="tab-c on" id="view-dashboard">
+  <div class="tbar">
+    <div class="tdot"></div>
+    <div class="tinfo" id="dateLabel">—</div>
+    <div class="tclk" id="clk2">--:--</div>
+  </div>
+  <div class="sgrid">
+    <div class="sc nl"><div class="lb">Salas totales</div><div class="vl">2</div><div class="sb">Sala A · Sala B</div></div>
+    <div class="sc gl"><div class="lb">Disponibles</div><div class="vl" id="cntFree">2</div><div class="sb">Ahora mismo</div></div>
+    <div class="sc rl"><div class="lb">Ocupadas</div><div class="vl" id="cntOcc">0</div><div class="sb">En este momento</div></div>
+  </div>
+  <div class="sttl"><i class="ti ti-door" aria-hidden="true"></i> Estado de salas</div>
+  <div class="rooms" id="roomsGrid"></div>
+  <div id="myResWrap" style="display:none;">
+    <div class="sttl"><i class="ti ti-clipboard-list" aria-hidden="true"></i> Mis próximas reservaciones</div>
+    <div id="myResList"></div>
+  </div>
+</div>
+
+<!-- AGENDA = GANTT -->
+<div class="tab-c" id="view-agenda">
+  <div class="nav-row">
+    <button class="wbtn" onclick="chAgendaDay(-1)" id="agPrev" aria-label="Día anterior"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+    <div class="wlbl" id="agendaDayLabel">—</div>
+    <button class="wbtn" onclick="chAgendaDay(1)" id="agNext" aria-label="Día siguiente"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+  </div>
+  <div class="info-banner" id="agendaLimitNote" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> <span>Como docente puedes visualizar y reservar hasta 7 días hacia adelante (incluyendo hoy).</span></div>
+  <div class="gantt-wrap" id="ganttWrap"></div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="tab-c" id="view-historial">
+  <div class="nav-row">
+    <button class="wbtn" onclick="chMo(-1)" aria-label="Mes anterior"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+    <div class="wlbl" id="monthLabel">—</div>
+    <button class="wbtn" onclick="chMo(1)" aria-label="Mes siguiente"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+    <button class="btn bp" style="flex:0;padding:7px 12px;" onclick="exportPDF()" id="pdfBtn"><i class="ti ti-download" aria-hidden="true"></i> Exportar PDF</button>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="sttl"><i class="ti ti-list" aria-hidden="true"></i> <span id="histDayTitle">Selecciona un día</span></div>
+  <div id="histList"></div>
+</div>
+
+<!-- USUARIOS (solo admin) -->
+<div class="tab-c" id="view-usuarios">
+  <div class="sgrid" style="grid-template-columns:1fr 1fr;">
+    <div class="sc nl"><div class="lb">Cuentas docentes</div><div class="vl" id="cntDoc">0</div><div class="sb">Registradas por sí mismos</div></div>
+    <div class="sc gl"><div class="lb">Cuentas administrador</div><div class="vl" id="cntAdm">0</div><div class="sb">Máximo 2 permitidas</div></div>
+  </div>
+  <div class="sttl"><i class="ti ti-user-check" aria-hidden="true"></i> Docentes registrados</div>
+  <div id="usrList"></div>
+</div>
+
+<!-- FORO (todos los roles) -->
+<div class="tab-c" id="view-foro">
+  <div class="forum-composer">
+    <div class="sttl" style="margin-bottom:9px;"><i class="ti ti-pencil-plus" aria-hidden="true"></i> Nueva publicación</div>
+    <textarea class="forum-ta" id="fpText" placeholder="Escribe tu comentario, sugerencia o reporta una incidencia sobre las salas de cómputo..."></textarea>
+    <div class="forum-row">
+      <select class="forum-cat" id="fpCat">
+        <option value="sug">Sugerencia</option>
+        <option value="com">Comentario</option>
+        <option value="inc">Incidencia</option>
+      </select>
+      <button class="btn bp" style="flex:0;padding:8px 16px;" onclick="submitPost()"><i class="ti ti-send" aria-hidden="true"></i> Publicar</button>
+    </div>
+  </div>
+  <div class="sttl"><i class="ti ti-messages" aria-hidden="true"></i> Publicaciones de la comunidad docente</div>
+  <div id="forumList"></div>
+</div>
+
+<!-- ESTADÍSTICAS (solo admin) -->
+<div class="tab-c" id="view-stats">
+  <div class="sgrid">
+    <div class="sc nl"><div class="lb">Visitas totales</div><div class="vl" id="statVisTotal">0</div><div class="sb">Desde que existe el sistema</div></div>
+    <div class="sc gl"><div class="lb">Visitas hoy</div><div class="vl" id="statVisToday">0</div><div class="sb">Cargas de la página</div></div>
+    <div class="sc rl"><div class="lb">Últimos 7 días</div><div class="vl" id="statVisWeek">0</div><div class="sb">Suma semanal</div></div>
+  </div>
+  <div class="barchart-wrap">
+    <div class="barchart-hd"><i class="ti ti-chart-bar" aria-hidden="true"></i> Tendencia de visitas — últimos 7 días</div>
+    <div class="barchart" id="visitsBarChart"></div>
+  </div>
+  <div class="sgrid" style="grid-template-columns:1fr 1fr;">
+    <div class="sc nl"><div class="lb">Docentes registrados</div><div class="vl" id="statDocCount">0</div><div class="sb">Cuentas activas</div></div>
+    <div class="sc gl"><div class="lb">Publicaciones en el foro</div><div class="vl" id="statPostCount">0</div><div class="sb">Comentarios y sugerencias</div></div>
+  </div>
+  <div class="sttl"><i class="ti ti-messages" aria-hidden="true"></i> Actividad reciente del foro</div>
+  <div id="statRecentPosts"></div>
+</div>
+
+</main>
+
+<!-- MODAL RESERVAR -->
+<div class="modal-ov" id="resMod">
+<div class="modal">
+  <div class="mh"><h3><i class="ti ti-calendar-plus" aria-hidden="true"></i> Nueva reservación</h3><button class="mc" onclick="closeMod('resMod')">×</button></div>
+  <div class="mb">
+    <div class="fg"><label class="fl">Sala</label>
+      <select class="fi" id="rRoom"><option value="A">Sala A</option><option value="B">Sala B</option></select>
+    </div>
+    <div class="fg"><label class="fl">Fecha</label>
+      <input class="fi" type="date" id="rDate">
+      <div class="fhint" id="rDateHint" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> Máximo 7 días de anticipación</div>
+    </div>
+    <div class="fg"><label class="fl">Nombre del docente</label>
+      <input class="fi" id="rTeacher" placeholder="Ej. Ing. María López">
+    </div>
+    <div class="fg"><label class="fl">Grupo / Materia</label>
+      <input class="fi" id="rGroup" placeholder="Ej. ISC-7A · Programación Web">
+    </div>
+    <div class="fr">
+      <div class="fg" style="margin:0;"><label class="fl">Hora inicio</label>
+        <select class="fi" id="rStart">
+          <option>07:00</option><option>08:00</option><option>09:00</option><option>10:00</option>
+          <option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option>
+        </select>
+      </div>
+      <div class="fg" style="margin:0;"><label class="fl">Duración</label>
+        <select class="fi" id="rDur"><option value="1">1 hora</option><option value="2" selected>2 horas</option><option value="3">3 horas</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="mf">
+    <button class="bmd sec" onclick="closeMod('resMod')">Cancelar</button>
+    <button class="bmd pri" onclick="submitRes()"><i class="ti ti-check" aria-hidden="true"></i> Confirmar</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal-ov" id="editMod">
+<div class="modal">
+  <div class="mh"><h3><i class="ti ti-edit" aria-hidden="true"></i> Editar reservación</h3><button class="mc" onclick="closeMod('editMod')">×</button></div>
+  <div class="mb">
+    <div class="fg"><label class="fl">Sala</label>
+      <select class="fi" id="eRoom"><option value="A">Sala A</option><option value="B">Sala B</option></select>
+    </div>
+    <div class="fg"><label class="fl">Fecha</label>
+      <input class="fi" type="date" id="eDate">
+      <div class="fhint" id="eDateHint" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> Máximo 7 días de anticipación</div>
+    </div>
+    <div class="fg"><label class="fl">Nombre del docente</label><input class="fi" id="eTeacher"></div>
+    <div class="fg"><label class="fl">Grupo / Materia</label><input class="fi" id="eGroup"></div>
+    <div class="fr">
+      <div class="fg" style="margin:0;"><label class="fl">Hora inicio</label>
+        <select class="fi" id="eStart">
+          <option>07:00</option><option>08:00</option><option>09:00</option><option>10:00</option>
+          <option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option>
+        </select>
+      </div>
+      <div class="fg" style="margin:0;"><label class="fl">Duración</label>
+        <select class="fi" id="eDur"><option value="1">1 hora</option><option value="2" selected>2 horas</option><option value="3">3 horas</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="mf">
+    <button class="bmd sec" style="margin-right:auto;color:var(--r);border-color:rgba(193,39,45,.3)!important;" onclick="deleteRes()"><i class="ti ti-trash" aria-hidden="true"></i> Cancelar reservación</button>
+    <button class="bmd sec" onclick="closeMod('editMod')">Cerrar</button>
+    <button class="bmd pri" onclick="saveEdit()">Guardar</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL LIBERAR -->
+<div class="modal-ov" id="relMod">
+<div class="modal">
+  <div class="mh"><h3><i class="ti ti-door-exit" aria-hidden="true"></i> Desocupar sala</h3><button class="mc" onclick="closeMod('relMod')">×</button></div>
+  <div class="mb">
+    <p style="font-size:13px;color:var(--gy);margin-bottom:12px;">¿Confirmas que deseas liberar la sala antes del tiempo programado?</p>
+    <div style="background:var(--gl);border:.5px solid rgba(242,169,0,.3);border-radius:8px;padding:10px 13px;font-size:13px;color:#7A5200;">
+      <strong id="relLabel">—</strong><br><span id="relInfo" style="font-size:12px;"></span>
+    </div>
+  </div>
+  <div class="mf">
+    <button class="bmd sec" onclick="closeMod('relMod')">Cancelar</button>
+    <button class="bmd grn" onclick="confirmRel()"><i class="ti ti-check" aria-hidden="true"></i> Liberar sala</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL CONFIRMAR (genérico) -->
+<div class="modal-ov" id="confirmMod">
+<div class="modal">
+  <div class="mh"><h3 id="cfTitle"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Confirmar</h3><button class="mc" onclick="closeMod('confirmMod')">×</button></div>
+  <div class="mb"><p id="cfText" style="font-size:13px;color:var(--gy);"></p></div>
+  <div class="mf">
+    <button class="bmd sec" onclick="closeMod('confirmMod')">Cancelar</button>
+    <button class="bmd pri" id="cfOkBtn">Confirmar</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div><!-- /appRoot -->
+</div><!-- /app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const GANTT_START=7, GANTT_END=15, GANTT_HOURS=GANTT_END-GANTT_START;
+const MAX_ADVANCE_DAYS=6; // docentes: hoy + 6 días = ventana de 7 días
+
+let moOff=0, selDay=null, editId=null, pendRelId=null, preRoom=null, preHour=null;
+let authMode='login';
+let session=null; // {id,name,email,role}
+
+let accounts=[];
+let rooms={ A:{name:'Sala A',maintenance:false}, B:{name:'Sala B',maintenance:false} };
+let reservations=[];
+let histLog=[];
+let agendaDate=null; // ISO string, fecha que se está viendo en Agenda
+let visits={total:0,log:[]};
+let forumPosts=[];
+let openReplyBoxes={};
+
+/* ================= UTILIDADES DE FECHA ================= */
+function pad(x){return String(x).padStart(2,'0');}
+function td(){return new Date().toISOString().split('T')[0];}
+function addDays(dateStr,n){
+  const d=new Date(dateStr+'T00:00:00');
+  d.setDate(d.getDate()+n);
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function dayDiff(dateStr){
+  const a=new Date(td()+'T00:00:00'), b=new Date(dateStr+'T00:00:00');
+  return Math.round((b-a)/86400000);
+}
+function fmtDateLong(dateStr){
+  const [y,m,d]=dateStr.split('-').map(Number);
+  const ds=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const dt=new Date(y,m-1,d);
+  return `${ds[dt.getDay()]} ${d} de ${MONTHS[m-1]} de ${y}`;
+}
+function isDoc(){return session&&session.role==='docente';}
+function isAdm(){return session&&session.role==='admin';}
+
+/* ================= ALMACENAMIENTO PERSISTENTE ================= */
+function seedAccounts(){
+  return [
+    {id:'admin-1',name:'Administrador Principal',email:'admin1@centrocomputo.edu',password:'Admin#2026!',role:'admin'},
+    {id:'admin-2',name:'Administrador Secundario',email:'admin2@centrocomputo.edu',password:'Admin#2026$',role:'admin'}
+  ];
+}
+async function loadKey(key,def){
+  try{
+    const r=await window.storage.get(key,true);
+    return r&&r.value?JSON.parse(r.value):def;
+  }catch(e){
+    try{await window.storage.set(key,JSON.stringify(def),true);}catch(e2){}
+    return def;
+  }
+}
+async function saveKey(key,val){
+  try{await window.storage.set(key,JSON.stringify(val),true);}catch(e){console.error('storage error',key,e);}
+}
+async function loadState(){
+  accounts=await loadKey('sr-accounts',seedAccounts());
+  reservations=await loadKey('sr-reservations',[]);
+  const rs=await loadKey('sr-rooms',{A:{maintenance:false},B:{maintenance:false}});
+  rooms.A.maintenance=!!rs.A?.maintenance;
+  rooms.B.maintenance=!!rs.B?.maintenance;
+  histLog=await loadKey('sr-histlog',[]);
+  visits=await loadKey('sr-visits',{total:0,log:[]});
+  forumPosts=await loadKey('sr-forum',[]);
+}
+function saveAccounts(){return saveKey('sr-accounts',accounts);}
+function saveReservations(){return saveKey('sr-reservations',reservations);}
+function saveRooms(){return saveKey('sr-rooms',{A:{maintenance:rooms.A.maintenance},B:{maintenance:rooms.B.maintenance}});}
+function saveHist(){return saveKey('sr-histlog',histLog);}
+function saveForum(){return saveKey('sr-forum',forumPosts);}
+async function registerVisit(){
+  const now=new Date();
+  visits.total=(visits.total||0)+1;
+  visits.log=visits.log||[];
+  visits.log.push({date:td(),time:`${pad(now.getHours())}:${pad(now.getMinutes())}`});
+  if(visits.log.length>1500)visits.log=visits.log.slice(visits.log.length-1500);
+  await saveKey('sr-visits',visits);
+}
+
+/* ================= BOOT ================= */
+async function boot(){
+  await loadState();
+  await registerVisit();
+  document.getElementById('loadingScreen').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+}
+boot();
+
+/* ================= RELOJ ================= */
+function updateClock(){
+  const n=new Date();
+  const full=`${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`;
+  const short=`${pad(n.getHours())}:${pad(n.getMinutes())}`;
+  const el2=document.getElementById('clk2');if(el2)el2.textContent=short;
+  const ds=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const lbl=`${ds[n.getDay()]} ${n.getDate()} de ${ms[n.getMonth()]} de ${n.getFullYear()}`;
+  const dl=document.getElementById('dateLabel');if(dl)dl.textContent=lbl;
+}
+setInterval(updateClock,1000);updateClock();
+setInterval(()=>{
+  if(!session)return;
+  if(document.getElementById('view-agenda').classList.contains('on'))renderGantt();
+  if(document.getElementById('view-dashboard').classList.contains('on')){renderRooms();updateStats();renderMyRes();}
+},30000);
+
+/* ================= AUTENTICACIÓN ================= */
+function setAuthMode(m){
+  authMode=m;
+  document.getElementById('atLogin').classList.toggle('on',m==='login');
+  document.getElementById('atReg').classList.toggle('on',m==='register');
+  document.getElementById('loginForm').style.display=m==='login'?'block':'none';
+  document.getElementById('registerForm').style.display=m==='register'?'block':'none';
+  hideAuthErr();
+}
+function showAuthErr(msg){const e=document.getElementById('authErr');e.textContent=msg;e.classList.add('show');}
+function hideAuthErr(){document.getElementById('authErr').classList.remove('show');}
+
+function doLogin(){
+  hideAuthErr();
+  const email=document.getElementById('liEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('liPass').value;
+  if(!email||!pass){showAuthErr('Ingresa tu correo y contraseña.');return;}
+  const acc=accounts.find(a=>a.email.toLowerCase()===email&&a.password===pass);
+  if(!acc){showAuthErr('Correo o contraseña incorrectos.');return;}
+  session={id:acc.id,name:acc.name,email:acc.email,role:acc.role};
+  enterApp();
+}
+async function doRegister(){
+  hideAuthErr();
+  const name=document.getElementById('rgName').value.trim();
+  const email=document.getElementById('rgEmail').value.trim().toLowerCase();
+  const p1=document.getElementById('rgPass').value;
+  const p2=document.getElementById('rgPass2').value;
+  if(!name||!email||!p1||!p2){showAuthErr('Completa todos los campos.');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAuthErr('Ingresa un correo válido.');return;}
+  if(p1.length<4){showAuthErr('La contraseña debe tener al menos 4 caracteres.');return;}
+  if(p1!==p2){showAuthErr('Las contraseñas no coinciden.');return;}
+  if(accounts.some(a=>a.email.toLowerCase()===email)){showAuthErr('Ya existe una cuenta con ese correo.');return;}
+  const acc={id:'doc-'+Date.now(),name,email,password:p1,role:'docente'};
+  accounts.push(acc);
+  await saveAccounts();
+  session={id:acc.id,name:acc.name,email:acc.email,role:acc.role};
+  showToastGlobal('Cuenta creada. ¡Bienvenido/a!');
+  enterApp();
+}
+function enterApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appRoot').style.display='block';
+  document.getElementById('uNameLbl').innerHTML=`${session.name}<small><span class="rolebadge ${session.role==='admin'?'adm':'doc'}">${session.role==='admin'?'Administrador':'Docente'}</span></small>`;
+  document.getElementById('tab-usuarios').style.display=isAdm()?'flex':'none';
+  document.getElementById('tab-stats').style.display=isAdm()?'flex':'none';
+  document.getElementById('pdfBtn').style.display=isAdm()?'flex':'none';
+  document.getElementById('agendaLimitNote').style.display=isDoc()?'flex':'none';
+  agendaDate=td();
+  // limpiar formularios de auth
+  ['liEmail','liPass','rgName','rgEmail','rgPass','rgPass2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  sw('dashboard');
+}
+function doLogout(){
+  session=null;
+  document.getElementById('appRoot').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  setAuthMode('login');
+}
+
+/* ================= NAVEGACIÓN ================= */
+function sw(tab){
+  if((tab==='usuarios'||tab==='stats')&&!isAdm())tab='dashboard';
+  document.querySelectorAll('.tab-c').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('view-'+tab).classList.add('on');
+  document.getElementById('tab-'+tab).classList.add('on');
+  if(tab==='agenda')renderGantt();
+  if(tab==='historial')renderHistorial();
+  if(tab==='usuarios')renderUsuarios();
+  if(tab==='foro')renderForum();
+  if(tab==='stats')renderStats();
+  if(tab==='dashboard'){renderRooms();updateStats();renderMyRes();}
+}
+
+/* ================= ESTADO DE SALAS (calculado) ================= */
+function activeResFor(k,dateStr,nowH){
+  return reservations.find(r=>r.room===k&&r.date===dateStr&&!r.released&&parseInt(r.start)<=nowH&&parseInt(r.end)>nowH);
+}
+function computeStatus(k){
+  if(rooms[k].maintenance)return{status:'maintenance',res:null};
+  const now=new Date();
+  const nowH=now.getHours()+now.getMinutes()/60;
+  const res=activeResFor(k,td(),nowH);
+  if(res)return{status:'occupied',res};
+  return{status:'available',res:null};
+}
+
+function updateStats(){
+  let free=0;
+  ['A','B'].forEach(k=>{if(computeStatus(k).status==='available')free++;});
+  document.getElementById('cntFree').textContent=free;
+  document.getElementById('cntOcc').textContent=2-free-( ['A','B'].filter(k=>computeStatus(k).status==='maintenance').length );
+}
+
+function renderRooms(){
+  const g=document.getElementById('roomsGrid');g.innerHTML='';
+  Object.entries(rooms).forEach(([k,r])=>{
+    const st=computeStatus(k);
+    const sc=st.status==='occupied'?'occ':st.status==='maintenance'?'mnt':'avl';
+    const sl=st.status==='occupied'?'En uso':st.status==='maintenance'?'Mantenimiento':'Disponible';
+    let info;
+    if(st.status==='occupied'){
+      info=`<div class="rir"><span class="ll"><i class="ti ti-users" aria-hidden="true"></i> Grupo</span><span class="vv">${st.res.group}</span></div>
+         <div class="rir"><span class="ll"><i class="ti ti-user" aria-hidden="true"></i> Docente</span><span class="vv">${st.res.teacher}</span></div>
+         <div class="rir"><span class="ll"><i class="ti ti-clock" aria-hidden="true"></i> Libera a</span><span class="vv">${st.res.end}</span></div>`;
+    } else if(st.status==='maintenance'){
+      info=`<div class="rir"><span class="ll">Estado</span><span class="vv" style="color:#92620A;">En mantenimiento</span></div>`;
+    } else {
+      info=`<div class="rir"><span class="ll">Estado</span><span class="vv" style="color:var(--gr);">Lista para reservar</span></div>`;
+    }
+    let acts;
+    if(st.status==='available'){
+      acts=`<button class="btn bp" onclick="openResMod('${k}',null,null)"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Reservar</button>`;
+      if(isAdm())acts+=`<button class="btn bgold" onclick="setMnt('${k}')"><i class="ti ti-tools" aria-hidden="true"></i> Mantenimiento</button>`;
+    } else if(st.status==='occupied'){
+      const mine=isDoc()&&st.res.ownerId===session.id;
+      if(isAdm()||mine){
+        acts=`<button class="btn bg" onclick="openRelMod('${k}')"><i class="ti ti-door-exit" aria-hidden="true"></i> Desocupar</button>`;
+      } else {
+        acts=`<button class="btn bp" disabled><i class="ti ti-lock" aria-hidden="true"></i> Ocupada por otro docente</button>`;
+      }
+    } else { // maintenance
+      acts=isAdm()?`<button class="btn bg" onclick="setAvl('${k}')"><i class="ti ti-check" aria-hidden="true"></i> Marcar disponible</button>`
+                  :`<button class="btn bgold" disabled><i class="ti ti-tools" aria-hidden="true"></i> En mantenimiento</button>`;
+    }
+    g.innerHTML+=`<div class="rc">
+      <div class="rh ${sc}"><div class="rn">${r.name}</div><div class="sp ${sc}">${sl}</div></div>
+      <div class="rb">${info}</div>
+      <div class="ra">${acts}</div>
+    </div>`;
+  });
+}
+
+function renderMyRes(){
+  const wrap=document.getElementById('myResWrap');
+  if(!isDoc()){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const mine=reservations.filter(r=>r.ownerId===session.id&&!r.released&&dayDiff(r.date)>=0)
+    .sort((a,b)=>(a.date+a.start).localeCompare(b.date+b.start));
+  const el=document.getElementById('myResList');
+  if(!mine.length){el.innerHTML='<p class="empty-note">Aún no tienes reservaciones próximas. Usa «Reservar» o la Agenda para solicitar una sala.</p>';return;}
+  el.innerHTML=mine.map(r=>{
+    const dd=dayDiff(r.date);
+    const tag=dd===0?'Hoy':dd===1?'Mañana':`En ${dd} días`;
+    return `<div class="myres-item">
+      <div class="myres-badge">Sala<br>${r.room}</div>
+      <div class="myres-body"><strong>${r.group}</strong><span>${tag} · ${fmtDateLong(r.date)} · ${r.start}–${r.end}</span></div>
+      <div class="myres-acts">
+        <button class="iconbtn" title="Editar" onclick="openEditMod(${r.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+        <button class="iconbtn danger" title="Cancelar" onclick="editId=${r.id};deleteRes();"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ======== GANTT ======== */
+function pct(h){return((h-GANTT_START)/GANTT_HOURS*100);}
+
+function agendaMinDate(){return td();}
+function agendaMaxDate(){return isDoc()?addDays(td(),MAX_ADVANCE_DAYS):addDays(td(),60);}
+
+function chAgendaDay(delta){
+  const nd=addDays(agendaDate,delta);
+  if(nd<agendaMinDate()||nd>agendaMaxDate())return;
+  agendaDate=nd;
+  renderGantt();
+}
+
+function renderGantt(){
+  const wrap=document.getElementById('ganttWrap');
+  document.getElementById('agendaDayLabel').textContent=fmtDateLong(agendaDate)+(agendaDate===td()?' (hoy)':'');
+  document.getElementById('agPrev').disabled=agendaDate<=agendaMinDate();
+  document.getElementById('agNext').disabled=agendaDate>=agendaMaxDate();
+
+  const isToday=agendaDate===td();
+  const now=new Date();
+  const nowH=now.getHours()+(now.getMinutes()/60);
+  const showNow=isToday&&nowH>=GANTT_START&&nowH<=GANTT_END;
+  const nowPct=showNow?pct(nowH):null;
+
+  const rulers=[];
+  for(let h=GANTT_START;h<=GANTT_END;h++)rulers.push(h);
+
+  let html=`<div class="gantt-header">
+    <span class="gantt-title"><i class="ti ti-chart-gantt" aria-hidden="true"></i> Cronograma del día</span>
+    <span class="gantt-date">07:00 — 15:00</span>
+  </div>
+  <div class="gantt-body">
+    <div class="gantt-ruler">`;
+  rulers.forEach(h=>{
+    html+=`<div class="gantt-ruler-cell">${pad(h)}:00</div>`;
+  });
+  html+=`</div>`;
+
+  ['A','B'].forEach(k=>{
+    const dayRes=reservations.filter(r=>r.room===k&&r.date===agendaDate&&!r.released);
+    html+=`<div class="gantt-row">
+      <div class="gantt-label ${k.toLowerCase()}">${rooms[k].name}</div>
+      <div class="gantt-track" id="track-${k}">`;
+
+    for(let h=GANTT_START;h<GANTT_END;h++){
+      const lp=pct(h);
+      html+=`<div class="gantt-grid-line" style="left:${lp}%"></div>`;
+    }
+
+    const occupied=[];
+    if(rooms[k].maintenance){
+      html+=`<div class="gantt-block occ" style="left:0%;width:100%;background:var(--g);cursor:default;">
+        <div class="gantt-block-text" style="color:var(--n);"><span class="gantt-block-name">En mantenimiento</span></div>
+      </div>`;
+      for(let h=GANTT_START;h<GANTT_END;h++)occupied.push({start:h,end:h+1});
+    } else {
+      dayRes.forEach(r=>{
+        const sh=parseInt(r.start);
+        const eh=parseInt(r.end);
+        if(sh>=GANTT_END||eh<=GANTT_START)return;
+        const left=Math.max(pct(sh),0);
+        const right=Math.min(pct(eh),100);
+        const width=right-left;
+        occupied.push({start:sh,end:eh});
+        const colorClass=k==='A'?'sala-a':'';
+        const mine=isDoc()&&r.ownerId===session.id;
+        const canOpen=isAdm()||mine;
+        html+=`<div class="gantt-block occ ${colorClass}${mine?' mine':''}"
+          style="left:${left}%;width:${width}%;${canOpen?'':'cursor:default;'}"
+          ${canOpen?`onclick="openEditMod(${r.id})"`:''}
+          title="${r.group} — ${r.teacher}${canOpen?'':' (no editable)'}">
+          <div class="gantt-block-text">
+            <span class="gantt-block-name">${r.group||''}</span>
+            <span class="gantt-block-sub">${r.teacher||''} · ${r.start}–${r.end}</span>
+          </div>
+        </div>`;
+      });
+    }
+
+    if(!rooms[k].maintenance){
+      for(let h=GANTT_START;h<GANTT_END;h++){
+        const taken=occupied.some(o=>o.start<=h&&o.end>h);
+        if(!taken){
+          const left=pct(h);const width=pct(h+1)-left;
+          const locked=isDoc()&&(agendaDate<agendaMinDate()||agendaDate>agendaMaxDate());
+          html+=`<div class="gantt-free-slot${locked?' locked':''}" style="left:${left}%;width:${width}%"
+            ${locked?'':`onclick="openResMod('${k}','${pad(h)}:00','${agendaDate}')"`}
+            title="${locked?'Fuera de tu ventana de anticipación':'Reservar '+pad(h)+':00'}">
+            <i class="ti ti-plus" aria-hidden="true"></i>
+          </div>`;
+        }
+      }
+    }
+
+    if(nowPct!==null){
+      html+=`<div class="gantt-now-line" style="left:${nowPct}%">
+        <div class="gantt-now-dot"></div>
+      </div>`;
+    }
+
+    html+=`</div></div>`;
+  });
+
+  const nowStr=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  html+=`<div class="gantt-legend">
+    <div class="leg-item"><div class="leg-dot" style="background:var(--n);"></div> Sala A</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--r);"></div> Sala B</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--grl);border:1px solid rgba(45,122,79,.3);"></div> Disponible (clic para reservar)</div>
+    ${showNow?`<div class="now-badge"><div style="width:8px;height:2px;background:var(--g);border-radius:1px;"></div> Ahora: ${nowStr}</div>`:''}
+  </div>`;
+  html+=`</div>`;
+  wrap.innerHTML=html;
+}
+
+/* ======== MODALES ======== */
+function setDateFieldConstraints(inputId,hintId){
+  const inp=document.getElementById(inputId);
+  const hint=document.getElementById(hintId);
+  if(isDoc()){
+    inp.min=agendaMinDate();
+    inp.max=addDays(td(),MAX_ADVANCE_DAYS);
+    hint.style.display='flex';
+  } else {
+    inp.removeAttribute('min');
+    inp.removeAttribute('max');
+    hint.style.display='none';
+  }
+}
+
+function openResMod(room,hour,dateOverride){
+  preRoom=room;preHour=hour;
+  if(room)document.getElementById('rRoom').value=room;
+  if(hour)document.getElementById('rStart').value=hour;
+  document.getElementById('rDate').value=dateOverride||agendaDate||td();
+  setDateFieldConstraints('rDate','rDateHint');
+  if(isDoc()){
+    document.getElementById('rTeacher').value=session.name;
+    document.getElementById('rTeacher').disabled=true;
+  } else {
+    document.getElementById('rTeacher').value='';
+    document.getElementById('rTeacher').disabled=false;
+  }
+  document.getElementById('rGroup').value='';
+  document.getElementById('resMod').classList.add('open');
+}
+
+function validDocenteDate(dateStr){
+  if(!isDoc())return true;
+  const dd=dayDiff(dateStr);
+  return dd>=0&&dd<=MAX_ADVANCE_DAYS;
+}
+
+function submitRes(){
+  const room=document.getElementById('rRoom').value;
+  const date=document.getElementById('rDate').value;
+  const teacher=isDoc()?session.name:document.getElementById('rTeacher').value.trim();
+  const group=document.getElementById('rGroup').value.trim();
+  const start=document.getElementById('rStart').value;
+  const dur=parseInt(document.getElementById('rDur').value);
+  if(!date){showToast('Selecciona una fecha',true);return;}
+  if(!teacher){showToast('Escribe el nombre del docente',true);return;}
+  if(!group){showToast('Escribe el grupo o materia',true);return;}
+  if(!validDocenteDate(date)){showToast(`Como docente solo puedes reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación (incluyendo hoy)`,true);return;}
+  if(rooms[room].maintenance){showToast(`Sala ${room} está en mantenimiento`,true);return;}
+  const sh=parseInt(start);const eh=sh+dur;
+  if(eh>GANTT_END){showToast(`La sesión excede el horario de atención (hasta las ${pad(GANTT_END)}:00)`,true);return;}
+  const endStr=`${pad(eh)}:00`;
+  const conf=reservations.find(x=>x.room===room&&x.date===date&&!x.released&&!(eh<=parseInt(x.start)||sh>=parseInt(x.end)));
+  if(conf){showToast(`Conflicto: Sala ${room} ya tiene reservación de ${conf.start} a ${conf.end} ese día`,true);return;}
+  const now=new Date();
+  const ownerId=isDoc()?session.id:null;
+  const id=Date.now();
+  reservations.push({id,room,group,teacher,date,start,end:endStr,ownerId,released:false});
+  histLog.unshift({type:'res',text:`Sala ${room} reservada — ${group}`,sub:teacher,date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId});
+  saveReservations();saveHist();
+  closeMod('resMod');showToast(`Sala ${room} reservada · ${date} ${start}–${endStr}`);refresh();
+}
+
+function canManage(r){
+  return isAdm()||(isDoc()&&r.ownerId===session.id);
+}
+
+function openEditMod(id){
+  const r=reservations.find(x=>x.id===id);if(!r)return;
+  if(!canManage(r)){showToast('No puedes editar la reservación de otro docente',true);return;}
+  editId=id;
+  document.getElementById('eRoom').value=r.room;
+  document.getElementById('eDate').value=r.date;
+  setDateFieldConstraints('eDate','eDateHint');
+  document.getElementById('eTeacher').value=r.teacher||'';
+  document.getElementById('eTeacher').disabled=isDoc();
+  document.getElementById('eGroup').value=r.group||'';
+  document.getElementById('eStart').value=r.start;
+  document.getElementById('eDur').value=String(parseInt(r.end)-parseInt(r.start));
+  document.getElementById('editMod').classList.add('open');
+}
+
+function saveEdit(){
+  const r=reservations.find(x=>x.id===editId);if(!r)return;
+  if(!canManage(r)){showToast('No tienes permiso para editar esta reservación',true);return;}
+  const room=document.getElementById('eRoom').value;
+  const date=document.getElementById('eDate').value;
+  const teacher=isDoc()?session.name:document.getElementById('eTeacher').value.trim();
+  const group=document.getElementById('eGroup').value.trim();
+  const start=document.getElementById('eStart').value;
+  const dur=parseInt(document.getElementById('eDur').value);
+  if(!date||!teacher||!group){showToast('Completa todos los campos',true);return;}
+  if(!validDocenteDate(date)){showToast(`Como docente solo puedes reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación`,true);return;}
+  const sh=parseInt(start);const eh=sh+dur;
+  if(eh>GANTT_END){showToast(`Excede el horario de atención`,true);return;}
+  const endStr=`${pad(eh)}:00`;
+  const conf=reservations.find(x=>x.id!==editId&&x.room===room&&x.date===date&&!x.released&&!(eh<=parseInt(x.start)||sh>=parseInt(x.end)));
+  if(conf){showToast(`Conflicto con ${conf.group} (${conf.start}–${conf.end})`,true);return;}
+  const now=new Date();
+  histLog.unshift({type:'res',text:`Sala ${room} reagendada — ${group}`,sub:teacher,date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:r.ownerId});
+  r.room=room;r.date=date;r.teacher=teacher;r.group=group;r.start=start;r.end=endStr;
+  saveReservations();saveHist();
+  closeMod('editMod');showToast('Reservación actualizada');refresh();
+}
+
+function deleteRes(){
+  const r=reservations.find(x=>x.id===editId);if(!r)return;
+  if(!canManage(r)){showToast('No tienes permiso para cancelar esta reservación',true);return;}
+  const now=new Date();
+  histLog.unshift({type:'can',text:`Reservación cancelada — Sala ${r.room}`,sub:r.teacher||'',date:r.date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:r.ownerId});
+  reservations=reservations.filter(x=>x.id!==editId);
+  saveReservations();saveHist();
+  closeMod('editMod');showToast('Reservación cancelada');refresh();
+}
+
+function openRelMod(k){
+  const st=computeStatus(k);
+  if(st.status!=='occupied')return;
+  if(!canManage(st.res)){showToast('No puedes liberar una sala ocupada por otro docente',true);return;}
+  pendRelId=st.res.id;
+  document.getElementById('relLabel').textContent=rooms[k].name;
+  document.getElementById('relInfo').textContent=`${st.res.group} · ${st.res.teacher} · hasta las ${st.res.end}`;
+  document.getElementById('relMod').classList.add('open');
+}
+
+function confirmRel(){
+  if(!pendRelId)return;
+  const r=reservations.find(x=>x.id===pendRelId);if(!r){closeMod('relMod');return;}
+  const now=new Date();
+  histLog.unshift({type:'rel',text:`Sala ${r.room} desocupada anticipadamente`,sub:r.teacher||'',date:r.date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:r.ownerId});
+  r.released=true;
+  pendRelId=null;
+  saveReservations();saveHist();
+  closeMod('relMod');showToast(`Sala ${r.room} disponible`);refresh();
+}
+
+function setMnt(k){
+  if(!isAdm())return;
+  const now=new Date();
+  rooms[k].maintenance=true;
+  histLog.unshift({type:'can',text:`${rooms[k].name} en mantenimiento`,sub:session.name,date:td(),time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:null});
+  saveRooms();saveHist();
+  refresh();showToast(`${rooms[k].name} en mantenimiento`);
+}
+function setAvl(k){
+  if(!isAdm())return;
+  const now=new Date();
+  rooms[k].maintenance=false;
+  histLog.unshift({type:'rel',text:`${rooms[k].name} disponible`,sub:session.name,date:td(),time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:null});
+  saveRooms();saveHist();
+  refresh();showToast(`${rooms[k].name} disponible`);
+}
+
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+
+function refresh(){
+  updateStats();renderRooms();renderMyRes();
+  if(document.getElementById('view-agenda').classList.contains('on'))renderGantt();
+  if(document.getElementById('view-historial').classList.contains('on'))renderHistorial();
+  if(document.getElementById('view-usuarios').classList.contains('on'))renderUsuarios();
+}
+
+function showToast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show'+(err?' err':'');
+  setTimeout(()=>{t.className='toast';},3000);
+}
+function showToastGlobal(msg){showToast(msg,false);}
+
+/* ======== HISTORIAL ======== */
+function visibleLogs(){
+  return isDoc()?histLog.filter(l=>l.ownerId===session.id):histLog;
+}
+
+function renderHistorial(){
+  const now=new Date();
+  const mo=new Date(now.getFullYear(),now.getMonth()+moOff,1);
+  document.getElementById('monthLabel').textContent=`${MONTHS[mo.getMonth()]} ${mo.getFullYear()}`;
+  const dim=new Date(mo.getFullYear(),mo.getMonth()+1,0).getDate();
+  const first=mo.getDay()===0?6:mo.getDay()-1;
+  const g=document.getElementById('calGrid');
+  const logs=visibleLogs();
+  let html=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<div class="cal-hdr">${d}</div>`).join('');
+  for(let i=0;i<first;i++)html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const ds=`${mo.getFullYear()}-${pad(mo.getMonth()+1)}-${pad(d)}`;
+    const isT=ds===td();const isSel=selDay===ds;
+    const dayLogs=logs.filter(l=>l.date===ds);
+    const dots=dayLogs.map(l=>`<div class="cdot" style="background:${l.type==='res'?'var(--n)':l.type==='can'?'var(--r)':'var(--gr)'};"></div>`).join('');
+    html+=`<div class="cal-day${isT?' today':''}${isSel?' sel':''}" onclick="selDate('${ds}')">
+      <div class="dn">${d}</div><div class="dc">${dots}</div>
+    </div>`;
+  }
+  g.innerHTML=html;
+  renderHistList();
+}
+
+function selDate(ds){
+  selDay=ds;
+  const [y,m,d]=ds.split('-');
+  document.getElementById('histDayTitle').textContent=`${parseInt(d)} de ${MONTHS[parseInt(m)-1]} de ${y}`;
+  renderHistorial();
+}
+
+function renderHistList(){
+  const el=document.getElementById('histList');
+  if(!selDay){el.innerHTML=`<p class="empty-note">Selecciona un día del calendario para ver la actividad</p>`;return;}
+  const logs=visibleLogs().filter(l=>l.date===selDay);
+  if(!logs.length){el.innerHTML=`<p class="empty-note">Sin actividad registrada en este día</p>`;return;}
+  el.innerHTML=logs.map(l=>`<div class="hist-item">
+    <div class="hico ${l.type}"><i class="ti ti-${l.type==='res'?'calendar-plus':l.type==='can'?'x':'door-exit'}" aria-hidden="true"></i></div>
+    <div class="hbody"><strong>${l.text}</strong><span>${l.sub} · ${l.time}</span></div>
+  </div>`).join('');
+}
+
+function chMo(d){moOff+=d;selDay=null;document.getElementById('histDayTitle').textContent='Selecciona un día';renderHistorial();}
+
+/* ======== USUARIOS (solo admin) ======== */
+function renderUsuarios(){
+  if(!isAdm())return;
+  const docs=accounts.filter(a=>a.role==='docente');
+  const adms=accounts.filter(a=>a.role==='admin');
+  document.getElementById('cntDoc').textContent=docs.length;
+  document.getElementById('cntAdm').textContent=adms.length;
+  const el=document.getElementById('usrList');
+  if(!docs.length){el.innerHTML='<p class="empty-note">Aún no hay docentes registrados.</p>';return;}
+  el.innerHTML=docs.map(a=>{
+    const initials=a.name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+    return `<div class="usr-row">
+      <div class="usr-av">${initials}</div>
+      <div class="usr-body"><strong>${a.name}</strong><span>${a.email}</span></div>
+      <button class="iconbtn danger" title="Eliminar cuenta" onclick="askDeleteAccount('${a.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function askDeleteAccount(id){
+  const acc=accounts.find(a=>a.id===id);if(!acc)return;
+  document.getElementById('cfTitle').innerHTML='<i class="ti ti-alert-triangle" aria-hidden="true"></i> Eliminar cuenta';
+  document.getElementById('cfText').textContent=`¿Eliminar la cuenta de ${acc.name} (${acc.email})? Sus reservaciones ya registradas se conservarán en el historial.`;
+  const btn=document.getElementById('cfOkBtn');
+  btn.onclick=async()=>{
+    accounts=accounts.filter(a=>a.id!==id);
+    await saveAccounts();
+    closeMod('confirmMod');
+    showToast('Cuenta eliminada');
+    renderUsuarios();
+  };
+  document.getElementById('confirmMod').classList.add('open');
+}
+
+/* ======== ESTADÍSTICAS (solo admin) ======== */
+function renderStats(){
+  if(!isAdm())return;
+  const log=visits.log||[];
+  const today=td();
+  const last7=[];
+  for(let i=6;i>=0;i--)last7.push(addDays(today,-i));
+  const countsByDay={};
+  last7.forEach(d=>countsByDay[d]=0);
+  log.forEach(v=>{if(v.date in countsByDay)countsByDay[v.date]++;});
+  const weekTotal=last7.reduce((s,d)=>s+countsByDay[d],0);
+  const todayTotal=countsByDay[today]||0;
+
+  document.getElementById('statVisTotal').textContent=visits.total||0;
+  document.getElementById('statVisToday').textContent=todayTotal;
+  document.getElementById('statVisWeek').textContent=weekTotal;
+  document.getElementById('statDocCount').textContent=accounts.filter(a=>a.role==='docente').length;
+  document.getElementById('statPostCount').textContent=forumPosts.length;
+
+  const maxV=Math.max(1,...last7.map(d=>countsByDay[d]));
+  const dowShort=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const bc=document.getElementById('visitsBarChart');
+  bc.innerHTML=last7.map(d=>{
+    const v=countsByDay[d];
+    const h=Math.max(4,(v/maxV)*108);
+    const dow=dowShort[new Date(d+'T00:00:00').getDay()];
+    return `<div class="barchart-col">
+      <div class="barchart-bar" style="height:${h}px;${d===today?'background:var(--r);':''}"><span class="bv">${v}</span></div>
+      <div class="barchart-lbl">${dow}</div>
+    </div>`;
+  }).join('');
+
+  const recent=[...forumPosts].sort((a,b)=>b.id-a.id).slice(0,5);
+  const rp=document.getElementById('statRecentPosts');
+  if(!recent.length){rp.innerHTML='<p class="empty-note">Aún no hay publicaciones en el foro.</p>';return;}
+  rp.innerHTML=recent.map(p=>`<div class="hist-item">
+    <div class="hico res"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
+    <div class="hbody"><strong>${p.authorName} · ${catLabel(p.category)}</strong><span>${p.text.slice(0,60)}${p.text.length>60?'…':''} · ${p.date} ${p.time}</span></div>
+  </div>`).join('');
+}
+
+/* ======== FORO ======== */
+function catLabel(c){return c==='sug'?'Sugerencia':c==='inc'?'Incidencia':'Comentario';}
+function catClass(c){return c==='sug'?'sug':c==='inc'?'inc':'com';}
+
+function submitPost(){
+  const text=document.getElementById('fpText').value.trim();
+  const cat=document.getElementById('fpCat').value;
+  if(!text){showToast('Escribe un mensaje antes de publicar',true);return;}
+  const now=new Date();
+  forumPosts.push({
+    id:Date.now(),authorId:session.id,authorName:session.name,role:session.role,
+    category:cat,text,date:td(),time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,replies:[]
+  });
+  saveForum();
+  document.getElementById('fpText').value='';
+  showToast('Publicación enviada');
+  renderForum();
+}
+
+function initials(name){return (name||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');}
+
+function renderForum(){
+  const el=document.getElementById('forumList');
+  const posts=[...forumPosts].sort((a,b)=>b.id-a.id);
+  if(!posts.length){el.innerHTML='<p class="empty-note">Aún no hay publicaciones. ¡Sé el primero en compartir un comentario o sugerencia!</p>';return;}
+  el.innerHTML=posts.map(p=>{
+    const canDelPost=isAdm()||p.authorId===session.id;
+    const replyOpen=!!openReplyBoxes[p.id];
+    const repliesHtml=(p.replies||[]).map(r=>{
+      const canDelReply=isAdm()||r.authorId===session.id;
+      return `<div class="forum-reply">
+        <div class="forum-reply-hd"><strong>${r.authorName}</strong><span class="rolebadge ${r.role==='admin'?'adm':'doc'}" style="font-size:8.5px;">${r.role==='admin'?'Admin':'Docente'}</span><span>${r.date} · ${r.time}</span></div>
+        <p>${escapeHtml(r.text)}</p>
+        ${canDelReply?`<button class="forum-link danger" onclick="deleteReply(${p.id},${r.id})"><i class="ti ti-trash" aria-hidden="true"></i> Eliminar</button>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="forum-post">
+      <div class="forum-hd">
+        <div class="forum-av">${initials(p.authorName)}</div>
+        <div class="forum-who"><strong>${p.authorName}</strong><span>${p.role==='admin'?'Administrador':'Docente'} · ${p.date} ${p.time}</span></div>
+        <span class="pill ${catClass(p.category)}">${catLabel(p.category)}</span>
+      </div>
+      <div class="forum-text">${escapeHtml(p.text)}</div>
+      <div class="forum-acts">
+        <button class="forum-link" onclick="toggleReplyBox(${p.id})"><i class="ti ti-message-2" aria-hidden="true"></i> Responder${p.replies&&p.replies.length?` (${p.replies.length})`:''}</button>
+        ${canDelPost?`<button class="forum-link danger" onclick="askDeletePost(${p.id})"><i class="ti ti-trash" aria-hidden="true"></i> Eliminar</button>`:''}
+      </div>
+      ${p.replies&&p.replies.length?`<div class="forum-replies">${repliesHtml}</div>`:''}
+      <div class="forum-reply-box${replyOpen?' open':''}" id="replyBox-${p.id}">
+        <input class="forum-reply-input" id="replyInput-${p.id}" placeholder="Escribe una respuesta...">
+        <button class="btn bp" style="flex:0;padding:7px 12px;" onclick="submitReply(${p.id})"><i class="ti ti-send" aria-hidden="true"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(s){
+  const d=document.createElement('div');d.textContent=s;return d.innerHTML;
+}
+
+function toggleReplyBox(postId){
+  openReplyBoxes[postId]=!openReplyBoxes[postId];
+  renderForum();
+  if(openReplyBoxes[postId]){
+    const inp=document.getElementById('replyInput-'+postId);
+    if(inp)inp.focus();
+  }
+}
+
+function submitReply(postId){
+  const post=forumPosts.find(p=>p.id===postId);if(!post)return;
+  const inp=document.getElementById('replyInput-'+postId);
+  const text=inp.value.trim();
+  if(!text){showToast('Escribe una respuesta',true);return;}
+  const now=new Date();
+  post.replies=post.replies||[];
+  post.replies.push({id:Date.now(),authorId:session.id,authorName:session.name,role:session.role,text,date:td(),time:`${pad(now.getHours())}:${pad(now.getMinutes())}`});
+  saveForum();
+  openReplyBoxes[postId]=false;
+  showToast('Respuesta publicada');
+  renderForum();
+}
+
+function askDeletePost(postId){
+  const post=forumPosts.find(p=>p.id===postId);if(!post)return;
+  document.getElementById('cfTitle').innerHTML='<i class="ti ti-alert-triangle" aria-hidden="true"></i> Eliminar publicación';
+  document.getElementById('cfText').textContent='¿Eliminar esta publicación y todas sus respuestas? Esta acción no se puede deshacer.';
+  const btn=document.getElementById('cfOkBtn');
+  btn.onclick=async()=>{
+    forumPosts=forumPosts.filter(p=>p.id!==postId);
+    await saveForum();
+    closeMod('confirmMod');
+    showToast('Publicación eliminada');
+    renderForum();
+    if(document.getElementById('view-stats').classList.contains('on'))renderStats();
+  };
+  document.getElementById('confirmMod').classList.add('open');
+}
+
+function deleteReply(postId,replyId){
+  const post=forumPosts.find(p=>p.id===postId);if(!post)return;
+  const reply=(post.replies||[]).find(r=>r.id===replyId);if(!reply)return;
+  if(!(isAdm()||reply.authorId===session.id)){showToast('No tienes permiso para eliminar esta respuesta',true);return;}
+  post.replies=post.replies.filter(r=>r.id!==replyId);
+  saveForum();
+  showToast('Respuesta eliminada');
+  renderForum();
+}
+
+/* ======== PDF ======== */
+function exportPDF(){
+  if(!isAdm())return;
+  if(typeof window.jspdf==='undefined'){showToast('Preparando...');setTimeout(exportPDF,700);return;}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const now=new Date();
+  const mo=new Date(now.getFullYear(),now.getMonth()+moOff,1);
+  const moName=`${MONTHS[mo.getMonth()]} ${mo.getFullYear()}`;
+  doc.setFillColor(26,42,74);doc.rect(0,0,210,22,'F');
+  doc.setFillColor(193,39,45);doc.rect(0,22,210,3,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text('CENTRO DE CÓMPUTO — INSTITUTO TECNOLÓGICO',105,13,{align:'center'});
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text(`Historial: ${selDay||moName}`,105,19,{align:'center'});
+  doc.setTextColor(26,42,74);doc.setFontSize(11);doc.setFont('helvetica','bold');
+  doc.text(selDay?`Actividad del ${selDay}`:`Resumen mensual — ${moName}`,14,32);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(90,95,106);
+  doc.text(`Generado: ${now.toLocaleDateString('es-MX')} ${pad(now.getHours())}:${pad(now.getMinutes())}`,14,38);
+  const logs=selDay?histLog.filter(l=>l.date===selDay):histLog.filter(l=>{
+    const[y,m]=l.date.split('-');return parseInt(y)===mo.getFullYear()&&parseInt(m)===mo.getMonth()+1;
+  });
+  if(!logs.length){
+    doc.setFontSize(11);doc.setTextColor(90,95,106);doc.text('Sin actividad registrada.',105,60,{align:'center'});
+  } else {
+    let y=46;
+    const tmap={res:'RESERVACIÓN',can:'CANCELACIÓN',rel:'LIBERACIÓN'};
+    const cmap={res:[26,42,74],can:[193,39,45],rel:[45,122,79]};
+    logs.forEach(l=>{
+      if(y>272){doc.addPage();y=18;}
+      const[cr,cg,cb]=cmap[l.type]||[90,95,106];
+      doc.setFillColor(cr,cg,cb);doc.rect(14,y,3,12,'F');
+      doc.setTextColor(cr,cg,cb);doc.setFontSize(7);doc.setFont('helvetica','bold');
+      doc.text(tmap[l.type]||'',19,y+5);
+      doc.setTextColor(26,42,74);doc.setFontSize(10);doc.setFont('helvetica','bold');
+      doc.text(l.text,19,y+10);
+      doc.setTextColor(90,95,106);doc.setFontSize(8);doc.setFont('helvetica','normal');
+      doc.text(`${l.sub}  ·  ${l.date}  ·  ${l.time}`,19,y+15);
+      doc.setDrawColor(220,222,226);doc.line(14,y+18,196,y+18);
+      y+=21;
+    });
+  }
+  doc.setFillColor(26,42,74);doc.rect(0,287,210,10,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','normal');
+  doc.text('Instituto Tecnológico — Sistema de Gestión de Salas de Cómputo',105,293,{align:'center'});
+  doc.save(`historial-${(selDay||moName.toLowerCase().replace(' ','-'))}.pdf`);
+  showToast('PDF descargado');
+}
+</script>
