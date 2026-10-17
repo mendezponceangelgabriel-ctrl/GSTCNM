@@ -205,6 +205,12 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
 .barchart-wrap{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;margin-bottom:16px;}
 .barchart-hd{padding:11px 16px 0;font-size:12px;font-weight:600;color:var(--n);}
 
+.soft-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.soft-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--gyl);font-size:13px;color:var(--n);cursor:pointer;}
+.soft-opt:hover{border-color:var(--n);}
+.soft-opt input{accent-color:var(--r);width:15px;height:15px;cursor:pointer;}
+.soft-opt:has(input:checked){background:var(--nl);border-color:var(--n);font-weight:600;}
+
 /* ===== FORO ===== */
 .forum-composer{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:16px;}
 .forum-ta{width:100%;min-height:70px;padding:9px 11px;border:1px solid var(--bd);border-radius:6px;font-size:13px;color:var(--n);background:var(--gyl);font-family:inherit;resize:vertical;margin-bottom:9px;}
@@ -337,7 +343,7 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
     <div class="wlbl" id="agendaDayLabel">—</div>
     <button class="wbtn" onclick="chAgendaDay(1)" id="agNext" aria-label="Día siguiente"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
   </div>
-  <div class="info-banner" id="agendaLimitNote" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> <span>Como docente puedes visualizar y reservar hasta 7 días hacia adelante (incluyendo hoy).</span></div>
+  <div class="info-banner" id="agendaLimitNote" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> <span>Solo se puede visualizar y reservar hasta 7 días hacia adelante (incluyendo hoy).</span></div>
   <div class="gantt-wrap" id="ganttWrap"></div>
 </div>
 
@@ -412,14 +418,16 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
       <select class="fi" id="rRoom"><option value="A">Sala A</option><option value="B">Sala B</option></select>
     </div>
     <div class="fg"><label class="fl">Fecha</label>
-      <input class="fi" type="date" id="rDate">
-      <div class="fhint" id="rDateHint" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> Máximo 7 días de anticipación</div>
+      <div id="rDateWrap"></div>
     </div>
-    <div class="fg"><label class="fl">Nombre del docente</label>
-      <input class="fi" id="rTeacher" placeholder="Ej. Ing. María López">
+    <div class="fg"><label class="fl">Docente</label>
+      <div id="rTeacherWrap"></div>
     </div>
-    <div class="fg"><label class="fl">Grupo / Materia</label>
-      <input class="fi" id="rGroup" placeholder="Ej. ISC-7A · Programación Web">
+    <div class="fg"><label class="fl">Grupo y materia</label>
+      <div id="rGroupWrap"></div>
+    </div>
+    <div class="fg"><label class="fl">Software requerido</label>
+      <div id="rSoftWrap"></div>
     </div>
     <div class="fr">
       <div class="fg" style="margin:0;"><label class="fl">Hora inicio</label>
@@ -449,11 +457,17 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
       <select class="fi" id="eRoom"><option value="A">Sala A</option><option value="B">Sala B</option></select>
     </div>
     <div class="fg"><label class="fl">Fecha</label>
-      <input class="fi" type="date" id="eDate">
-      <div class="fhint" id="eDateHint" style="display:none;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> Máximo 7 días de anticipación</div>
+      <div id="eDateWrap"></div>
     </div>
-    <div class="fg"><label class="fl">Nombre del docente</label><input class="fi" id="eTeacher"></div>
-    <div class="fg"><label class="fl">Grupo / Materia</label><input class="fi" id="eGroup"></div>
+    <div class="fg"><label class="fl">Docente</label>
+      <div id="eTeacherWrap"></div>
+    </div>
+    <div class="fg"><label class="fl">Grupo y materia</label>
+      <div id="eGroupWrap"></div>
+    </div>
+    <div class="fg"><label class="fl">Software requerido</label>
+      <div id="eSoftWrap"></div>
+    </div>
     <div class="fr">
       <div class="fg" style="margin:0;"><label class="fl">Hora inicio</label>
         <select class="fi" id="eStart">
@@ -508,8 +522,8 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
 </div><!-- /app -->
 
 <!-- ===== FIREBASE (compat SDK, sin necesidad de npm/build) ===== -->
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 /* ---- Config de tu proyecto Firebase (estos valores son públicos por diseño) ---- */
@@ -531,6 +545,35 @@ const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
 const GANTT_START=7, GANTT_END=15, GANTT_HOURS=GANTT_END-GANTT_START;
 const MAX_ADVANCE_DAYS=6; // docentes: hoy + 6 días = ventana de 7 días
 
+const TEACHERS=[
+  'Gerardo Raúl Rodríguez Uc',
+  'Roger Eliezer Pérez Velázquez',
+  'Julio César Chac Pérez',
+  'José Humberto Pérez Pech',
+  'Sarahí Carmen Baeza Narváez'
+];
+const GROUPS=['5AI','5AG'];
+const SOFTWARE=['Word','PowerPoint','Excel','CmapTools'];
+const SUBJECTS_BY_GROUP={
+  '5AI':[
+    'Fundamentos de Bases de Datos',
+    'Tecnologías e Interfaces de Computadoras',
+    'Redes de Computadoras',
+    'Taller de Emprendedores',
+    'Análisis y Modelado de Sistemas de Información',
+    'Taller de Legislación Informática',
+    'Inteligencia de Negocios'
+  ],
+  '5AG':[
+    'Taller de Investigación I',
+    'Finanzas en las Organizaciones',
+    'Gestión del Capital Humano',
+    'Gestión de la Producción I',
+    'Mercadotecnia',
+    'Estadística Inferencial II'
+  ]
+};
+
 let moOff=0, selDay=null, editId=null, pendRelId=null, preRoom=null, preHour=null;
 let authMode='login';
 let session=null; // {id,name,email,role}
@@ -546,7 +589,7 @@ let openReplyBoxes={};
 
 /* ================= UTILIDADES DE FECHA ================= */
 function pad(x){return String(x).padStart(2,'0');}
-function td(){return new Date().toISOString().split('T')[0];}
+function td(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;}
 function addDays(dateStr,n){
   const d=new Date(dateStr+'T00:00:00');
   d.setDate(d.getDate()+n);
@@ -685,6 +728,22 @@ setInterval(()=>{
   if(document.getElementById('view-dashboard').classList.contains('on')){renderRooms();updateStats();renderMyRes();}
 },30000);
 
+/* ===== Ventana de fechas en tiempo real (si cambia el día con el modal abierto) ===== */
+setInterval(()=>{
+  if(!session)return;
+  if(agendaDate&&agendaDate<td()){agendaDate=td();if(document.getElementById('view-agenda').classList.contains('on'))renderGantt();}
+  {
+    ['r','e'].forEach(pf=>{
+      const el=document.getElementById(pf+'Date');
+      const modal=document.getElementById(pf==='r'?'resMod':'editMod');
+      if(el&&el.tagName==='SELECT'&&modal.classList.contains('open')&&!Array.from(el.options).some(o=>o.value===td())){
+        buildDateField(pf,el.value);
+        showToast('La fecha cambió: se actualizaron los 7 días disponibles',true);
+      }
+    });
+  }
+},20000);
+
 /* ================= AUTENTICACIÓN ================= */
 function setAuthMode(m){
   authMode=m;
@@ -732,7 +791,7 @@ function enterApp(){
   document.getElementById('tab-usuarios').style.display=isAdm()?'flex':'none';
   document.getElementById('tab-stats').style.display=isAdm()?'flex':'none';
   document.getElementById('pdfBtn').style.display=isAdm()?'flex':'none';
-  document.getElementById('agendaLimitNote').style.display=isDoc()?'flex':'none';
+  document.getElementById('agendaLimitNote').style.display='flex';
   agendaDate=td();
   // limpiar formularios de auth
   ['liEmail','liPass','rgName','rgEmail','rgPass','rgPass2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -790,7 +849,8 @@ function renderRooms(){
     if(st.status==='occupied'){
       info=`<div class="rir"><span class="ll"><i class="ti ti-users" aria-hidden="true"></i> Grupo</span><span class="vv">${st.res.group}</span></div>
          <div class="rir"><span class="ll"><i class="ti ti-user" aria-hidden="true"></i> Docente</span><span class="vv">${st.res.teacher}</span></div>
-         <div class="rir"><span class="ll"><i class="ti ti-clock" aria-hidden="true"></i> Libera a</span><span class="vv">${st.res.end}</span></div>`;
+         <div class="rir"><span class="ll"><i class="ti ti-clock" aria-hidden="true"></i> Libera a</span><span class="vv">${st.res.end}</span></div>
+         ${st.res.software&&st.res.software.length?`<div class="rir"><span class="ll"><i class="ti ti-apps" aria-hidden="true"></i> Software</span><span class="vv">${st.res.software.join(', ')}</span></div>`:''}`;
     } else if(st.status==='maintenance'){
       info=`<div class="rir"><span class="ll">Estado</span><span class="vv" style="color:#92620A;">En mantenimiento</span></div>`;
     } else {
@@ -832,7 +892,7 @@ function renderMyRes(){
     const tag=dd===0?'Hoy':dd===1?'Mañana':`En ${dd} días`;
     return `<div class="myres-item">
       <div class="myres-badge">Sala<br>${r.room}</div>
-      <div class="myres-body"><strong>${r.group}</strong><span>${tag} · ${fmtDateLong(r.date)} · ${r.start}–${r.end}</span></div>
+      <div class="myres-body"><strong>${r.group}</strong><span>${tag} · ${fmtDateLong(r.date)} · ${r.start}–${r.end}${r.software&&r.software.length?' · '+r.software.join(', '):''}</span></div>
       <div class="myres-acts">
         <button class="iconbtn" title="Editar" onclick="openEditMod(${r.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
         <button class="iconbtn danger" title="Cancelar" onclick="editId=${r.id};deleteRes();"><i class="ti ti-trash" aria-hidden="true"></i></button>
@@ -845,7 +905,7 @@ function renderMyRes(){
 function pct(h){return((h-GANTT_START)/GANTT_HOURS*100);}
 
 function agendaMinDate(){return td();}
-function agendaMaxDate(){return isDoc()?addDays(td(),MAX_ADVANCE_DAYS):addDays(td(),60);}
+function agendaMaxDate(){return addDays(td(),MAX_ADVANCE_DAYS);}
 
 function chAgendaDay(delta){
   const nd=addDays(agendaDate,delta);
@@ -926,7 +986,7 @@ function renderGantt(){
         const taken=occupied.some(o=>o.start<=h&&o.end>h);
         if(!taken){
           const left=pct(h);const width=pct(h+1)-left;
-          const locked=isDoc()&&(agendaDate<agendaMinDate()||agendaDate>agendaMaxDate());
+          const locked=(agendaDate<agendaMinDate()||agendaDate>agendaMaxDate());
           html+=`<div class="gantt-free-slot${locked?' locked':''}" style="left:${left}%;width:${width}%"
             ${locked?'':`onclick="openResMod('${k}','${pad(h)}:00','${agendaDate}')"`}
             title="${locked?'Fuera de tu ventana de anticipación':'Reservar '+pad(h)+':00'}">
@@ -957,39 +1017,75 @@ function renderGantt(){
 }
 
 /* ======== MODALES ======== */
-function setDateFieldConstraints(inputId,hintId){
-  const inp=document.getElementById(inputId);
-  const hint=document.getElementById(hintId);
-  if(isDoc()){
-    inp.min=agendaMinDate();
-    inp.max=addDays(td(),MAX_ADVANCE_DAYS);
-    hint.style.display='flex';
-  } else {
-    inp.removeAttribute('min');
-    inp.removeAttribute('max');
-    hint.style.display='none';
+function buildDateField(prefix,dateOverride){
+  const wrap=document.getElementById(prefix+'DateWrap');
+  const inRange=!!dateOverride&&dayDiff(dateOverride)>=0&&dayDiff(dateOverride)<=MAX_ADVANCE_DAYS;
+  let opts='';
+  if(dateOverride&&!inRange&&prefix==='e'){
+    opts+=`<option value="${dateOverride}">Fecha actual — ${fmtDateLong(dateOverride)}</option>`;
   }
+  for(let i=0;i<=MAX_ADVANCE_DAYS;i++){
+    const ds=addDays(td(),i);
+    const tag=i===0?'Hoy':i===1?'Mañana':`En ${i} días`;
+    opts+=`<option value="${ds}">${tag} — ${fmtDateLong(ds)}</option>`;
+  }
+  wrap.innerHTML=`<select class="fi" id="${prefix}Date">${opts}</select>
+    <div class="fhint" style="display:flex;"><i class="ti ti-clock-hour-4" aria-hidden="true"></i> Solo se puede reservar con máximo 7 días de anticipación (hoy y los 6 días siguientes)</div>`;
+  document.getElementById(prefix+'Date').value=(inRange||(prefix==='e'&&dateOverride))?dateOverride:td();
+}
+
+function buildTeacherField(prefix,current){
+  const wrap=document.getElementById(prefix+'TeacherWrap');
+  if(isDoc()){
+    wrap.innerHTML=`<input class="fi" id="${prefix}Teacher" value="${session.name}" disabled>`;
+  } else {
+    let opts='<option value="">Selecciona un docente</option>';
+    TEACHERS.forEach(t=>{opts+=`<option value="${t}"${t===current?' selected':''}>${t}</option>`;});
+    wrap.innerHTML=`<select class="fi" id="${prefix}Teacher">${opts}</select>`;
+  }
+}
+
+function buildGroupField(prefix,curGroup,curSubj){
+  const wrap=document.getElementById(prefix+'GroupWrap');
+  let gopts='<option value="">Selecciona un grupo</option>';
+  GROUPS.forEach(g=>{gopts+=`<option value="${g}"${g===curGroup?' selected':''}>${g}</option>`;});
+  wrap.innerHTML=`<select class="fi" id="${prefix}GroupSel" onchange="onGroupChange('${prefix}')">${gopts}</select>
+    <select class="fi" id="${prefix}SubjectSel" style="margin-top:8px;"><option value="">Primero elige un grupo</option></select>`;
+  if(curGroup){
+    onGroupChange(prefix);
+    const subjSel=document.getElementById(prefix+'SubjectSel');
+    if(subjSel)subjSel.value=curSubj||'';
+  }
+}
+function onGroupChange(prefix){
+  const g=document.getElementById(prefix+'GroupSel').value;
+  const subSel=document.getElementById(prefix+'SubjectSel');
+  const subs=SUBJECTS_BY_GROUP[g]||[];
+  subSel.innerHTML='<option value="">Selecciona una materia</option>'+subs.map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+
+function buildSoftwareField(prefix,current){
+  const wrap=document.getElementById(prefix+'SoftWrap');
+  const cur=current||[];
+  wrap.innerHTML=`<div class="soft-grid">`+SOFTWARE.map(sw=>`<label class="soft-opt"><input type="checkbox" name="${prefix}Soft" value="${sw}"${cur.includes(sw)?' checked':''}> ${sw}</label>`).join('')+`</div>
+    <div class="fhint"><i class="ti ti-info-circle" aria-hidden="true"></i> Puedes elegir uno o varios (opcional)</div>`;
+}
+function getSoftware(prefix){
+  return Array.from(document.querySelectorAll(`input[name="${prefix}Soft"]:checked`)).map(i=>i.value);
 }
 
 function openResMod(room,hour,dateOverride){
   preRoom=room;preHour=hour;
   if(room)document.getElementById('rRoom').value=room;
   if(hour)document.getElementById('rStart').value=hour;
-  document.getElementById('rDate').value=dateOverride||agendaDate||td();
-  setDateFieldConstraints('rDate','rDateHint');
-  if(isDoc()){
-    document.getElementById('rTeacher').value=session.name;
-    document.getElementById('rTeacher').disabled=true;
-  } else {
-    document.getElementById('rTeacher').value='';
-    document.getElementById('rTeacher').disabled=false;
-  }
-  document.getElementById('rGroup').value='';
+  buildDateField('r',dateOverride||agendaDate);
+  buildTeacherField('r',null);
+  buildGroupField('r',null,null);
+  buildSoftwareField('r',[]);
   document.getElementById('resMod').classList.add('open');
 }
 
 function validDocenteDate(dateStr){
-  if(!isDoc())return true;
   const dd=dayDiff(dateStr);
   return dd>=0&&dd<=MAX_ADVANCE_DAYS;
 }
@@ -997,14 +1093,17 @@ function validDocenteDate(dateStr){
 function submitRes(){
   const room=document.getElementById('rRoom').value;
   const date=document.getElementById('rDate').value;
-  const teacher=isDoc()?session.name:document.getElementById('rTeacher').value.trim();
-  const group=document.getElementById('rGroup').value.trim();
+  const teacher=isDoc()?session.name:document.getElementById('rTeacher').value;
+  const grp=document.getElementById('rGroupSel').value;
+  const subj=document.getElementById('rSubjectSel').value;
   const start=document.getElementById('rStart').value;
   const dur=parseInt(document.getElementById('rDur').value);
   if(!date){showToast('Selecciona una fecha',true);return;}
-  if(!teacher){showToast('Escribe el nombre del docente',true);return;}
-  if(!group){showToast('Escribe el grupo o materia',true);return;}
-  if(!validDocenteDate(date)){showToast(`Como docente solo puedes reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación (incluyendo hoy)`,true);return;}
+  if(!teacher){showToast('Selecciona un docente',true);return;}
+  if(!grp){showToast('Selecciona un grupo',true);return;}
+  if(!subj){showToast('Selecciona una materia',true);return;}
+  const group=`${grp} · ${subj}`;
+  if(!validDocenteDate(date)){showToast(`Solo se puede reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación (incluyendo hoy)`,true);return;}
   if(rooms[room].maintenance){showToast(`Sala ${room} está en mantenimiento`,true);return;}
   const sh=parseInt(start);const eh=sh+dur;
   if(eh>GANTT_END){showToast(`La sesión excede el horario de atención (hasta las ${pad(GANTT_END)}:00)`,true);return;}
@@ -1014,7 +1113,7 @@ function submitRes(){
   const now=new Date();
   const ownerId=isDoc()?session.id:null;
   const id=Date.now();
-  reservations.push({id,room,group,teacher,date,start,end:endStr,ownerId,released:false});
+  reservations.push({id,room,group,teacher,date,start,end:endStr,ownerId,released:false,software:getSoftware('r')});
   histLog.unshift({type:'res',text:`Sala ${room} reservada — ${group}`,sub:teacher,date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId});
   saveReservations();saveHist();
   closeMod('resMod');showToast(`Sala ${room} reservada · ${date} ${start}–${endStr}`);refresh();
@@ -1029,13 +1128,13 @@ function openEditMod(id){
   if(!canManage(r)){showToast('No puedes editar la reservación de otro docente',true);return;}
   editId=id;
   document.getElementById('eRoom').value=r.room;
-  document.getElementById('eDate').value=r.date;
-  setDateFieldConstraints('eDate','eDateHint');
-  document.getElementById('eTeacher').value=r.teacher||'';
-  document.getElementById('eTeacher').disabled=isDoc();
-  document.getElementById('eGroup').value=r.group||'';
+  buildDateField('e',r.date);
   document.getElementById('eStart').value=r.start;
   document.getElementById('eDur').value=String(parseInt(r.end)-parseInt(r.start));
+  buildTeacherField('e',r.teacher);
+  const parts=(r.group||'').split(' · ');
+  buildGroupField('e',parts[0]||'',parts[1]||'');
+  buildSoftwareField('e',r.software||[]);
   document.getElementById('editMod').classList.add('open');
 }
 
@@ -1044,12 +1143,14 @@ function saveEdit(){
   if(!canManage(r)){showToast('No tienes permiso para editar esta reservación',true);return;}
   const room=document.getElementById('eRoom').value;
   const date=document.getElementById('eDate').value;
-  const teacher=isDoc()?session.name:document.getElementById('eTeacher').value.trim();
-  const group=document.getElementById('eGroup').value.trim();
+  const teacher=isDoc()?session.name:document.getElementById('eTeacher').value;
+  const grp=document.getElementById('eGroupSel').value;
+  const subj=document.getElementById('eSubjectSel').value;
   const start=document.getElementById('eStart').value;
   const dur=parseInt(document.getElementById('eDur').value);
-  if(!date||!teacher||!group){showToast('Completa todos los campos',true);return;}
-  if(!validDocenteDate(date)){showToast(`Como docente solo puedes reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación`,true);return;}
+  if(!date||!teacher||!grp||!subj){showToast('Completa todos los campos',true);return;}
+  const group=`${grp} · ${subj}`;
+  if(date!==r.date&&!validDocenteDate(date)){showToast(`Solo se puede reservar con un máximo de ${MAX_ADVANCE_DAYS+1} días de anticipación`,true);return;}
   const sh=parseInt(start);const eh=sh+dur;
   if(eh>GANTT_END){showToast(`Excede el horario de atención`,true);return;}
   const endStr=`${pad(eh)}:00`;
@@ -1057,7 +1158,7 @@ function saveEdit(){
   if(conf){showToast(`Conflicto con ${conf.group} (${conf.start}–${conf.end})`,true);return;}
   const now=new Date();
   histLog.unshift({type:'res',text:`Sala ${room} reagendada — ${group}`,sub:teacher,date,time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,ownerId:r.ownerId});
-  r.room=room;r.date=date;r.teacher=teacher;r.group=group;r.start=start;r.end=endStr;
+  r.room=room;r.date=date;r.teacher=teacher;r.group=group;r.start=start;r.end=endStr;r.software=getSoftware('e');
   saveReservations();saveHist();
   closeMod('editMod');showToast('Reservación actualizada');refresh();
 }
