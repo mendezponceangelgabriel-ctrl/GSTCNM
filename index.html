@@ -272,6 +272,23 @@ nav{display:flex;padding:0 18px;border-top:.5px solid rgba(255,255,255,.1);}
 @media(max-width:560px){.cur-flag{top:54px;}.cur-flag .pole{height:140px;}}
 @media (prefers-reduced-motion:reduce){#curtain *{animation-duration:.01s!important;}.cur-panel{transition-duration:.3s!important;}}
 
+/* ===== ENCABEZADO CLARO (logos transparentes sin caja) ===== */
+.header{background:#fff;}
+.htitle h1{color:var(--n);}
+.htitle p{color:var(--gy);}
+nav{border-top:.5px solid var(--bd);}
+.nb{color:var(--gy);}
+.nb:hover{color:var(--n);}
+.nb.on{color:var(--r);border-bottom-color:var(--r);}
+.uinfo .uname{color:var(--n);}
+.uinfo .uname small{color:var(--gy);}
+.rolebadge.doc{background:var(--nl);color:var(--n);}
+.logoutb{background:var(--nl);color:var(--n);}
+.logoutb:hover{background:#d9e0ec;}
+.govlogo{background:none;padding:0;border-radius:0;}
+.govlogo img.sep{height:30px;}
+.govlogo img.tec{height:40px;}
+
 /* ===== FORO ===== */
 .forum-composer{background:var(--color-background-primary,white);border:.5px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:16px;}
 .forum-ta{width:100%;min-height:70px;padding:9px 11px;border:1px solid var(--bd);border-radius:6px;font-size:13px;color:var(--n);background:var(--gyl);font-family:inherit;resize:vertical;margin-bottom:9px;}
